@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
       minlength: 8,
-      select: false,
+      // select: false,
     },
     avatar: {
       type: String,
@@ -59,9 +59,34 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
+
+// userSchema.methods.isPasswordCorrect = async function (password) {
+//   if (!password || !this.password) {
+//     throw new Error("Password or hash is missing");
+//   }
+//   return await bcrypt.compare(password, this.password);
+// };
+
 userSchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password);
+  if (!password) {
+    console.log("❌ Password argument is missing");
+    throw new Error("Password argument is missing");
+  }
+  if (!this.password) {
+    console.log("❌ Hashed password is missing");
+    throw new Error("Hashed password is missing");
+  }
+
+  console.log("🔹 Comparing Password:", password, "with Hash:", this.password);
+
+  const match = await bcrypt.compare(password, this.password);
+
+  console.log("🔹 Password Match Result:", match);
+
+  return match;
 };
+
+
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {

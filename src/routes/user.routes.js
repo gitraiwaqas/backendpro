@@ -3,7 +3,7 @@ import {
   loginUser,
   logoutUser,
 } from "../controllers/user.controller.js";
-import { verifyJWT } from "./middlewares/auth.middlewares.js";
+import { verifyJWT } from "../middlewares/auth.middlewares.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middlewares.js";
 const router = Router();
